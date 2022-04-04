@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!--타임리프 파일이라는 것을 인지 시키는 것--> 
+<head>
+<meta charset="UTF-8">
+<title>게시물 목록 보기</title>
+</head>
+<body>
+
+<h1>게시물 목록 보기</h1>
+<table border= 1> <!--border 1하면 표처럼 나타난다. 안하면 선이 없다. -->
+
+	<tr> <!-- 한 행을 의미  -->
+		<th>번호</th> <!-- 한 행에 4개의 열 -->
+		<th>제목</th>
+		<th>작성자</th>
+		<th>작성일</th>
+	</tr>
+	<!-- 하이퍼 링크를 표현하기 위해선 a href 사용하고 그 뒤에 이동할 url 입력, 그리고 그 뒤 span으로 묶은 부분은 diplay되는 문자 -->
+	<tbody>
+		<tr th:each="list:${list}">   <!-- each는 배열전용 for문, 여기서 쓴 list는 boardController에서 선언한 이름. span은 왜 선언해줄까  -->
+			<td><span th:text = ${list.seqno}></span></td> <!--span은 문장을 구분하는 단위의 html 명령어. -->
+			<td><a th:href = "@{'/board/boardView?seqno=' + ${list.seqno}}"><span th:text = "${list.mtitle}"></span></a></td> <!-- 하이퍼 링크에 해당하는 부분을 ''로 표현  -->
+			<td><span th:text = ${list.mwriter}></span></td>
+			<td><span th:text = ${list.mregdate}></span></td>
+		</tr>		
+	</tbody>
+</table>
+</body>
+</html>
