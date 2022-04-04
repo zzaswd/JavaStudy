@@ -1,0 +1,42 @@
+package com.test.exam01;
+
+
+class SingletonExamtest {
+
+	private static SingletonExamtest instance = new SingletonExamtest();
+	
+	private SingletonExamtest() {
+		
+	}
+	
+	public static SingletonExamtest getInstance() {
+		
+		if(instance == null) {
+			instance = new SingletonExamtest();
+		}
+		
+		return instance;
+	}
+	
+	
+}
+
+
+
+public class SingletonExam {
+
+	public static void main(String[] args) {
+		
+		
+		SingletonExam Car = SingletonExamtest.getInstance();
+		SingletonExam Car2 = SingletonExamtest.getInstance();
+		
+		System.out.println(Car);
+		System.out.println(Car2);
+		
+		
+		
+	}
+	
+	
+}

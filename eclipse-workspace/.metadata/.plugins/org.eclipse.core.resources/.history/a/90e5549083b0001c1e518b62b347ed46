@@ -1,0 +1,33 @@
+package Chapter07;
+
+
+public class DeepCopy {
+
+	public static void main(String[] args) {
+
+		Student[] array1 = new Student[3];
+		Student[] array2 = new Student[3];
+		
+		
+		array1[0] = new Student(1001,"kang");
+		array1[1] = new Student(1002,"Jang");
+		array1[2] = new Student(1003,"Lee");
+		
+		System.arraycopy(array1, 0, array2, 0, 3);
+ 		
+		array1[0].setName("lms");
+		
+		for ( int i = 0; i < array1.length; i++) {
+ 			array1[i].showStudentInfo();
+ 			
+ 		}
+		
+		for ( int i = 0; i < array1.length; i++) {
+ 			array2[i].showStudentInfo();
+ 			
+ 		}
+		
+		
+	}
+
+}

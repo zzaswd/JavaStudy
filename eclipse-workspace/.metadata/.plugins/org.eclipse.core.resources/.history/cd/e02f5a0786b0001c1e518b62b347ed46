@@ -1,0 +1,34 @@
+package Chapter07;
+
+
+
+public class TwoDimention {
+
+	public static void main(String[] args) {
+
+		char ch = 'A';
+		
+		char[][] array = new char[2][13];
+		int count = 0;
+		
+		for(int i = 0 ; i < array.length; i++) {
+			
+			for(int j = 0 ; j < array[i].length;i++) {
+				ch = (char)((int)ch+ count);
+				array[i][j] = ch;
+				count ++;
+					
+				
+				
+				
+			}
+			
+		}
+		
+		
+		
+		
+		
+	}
+
+}
