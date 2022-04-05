@@ -3,16 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <title>게시물 상세 보기</title>
-
+<script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  <!-- jquery에서 ajax에 적합한 외부 스크립트 파일 가져옴.  -->
 <script>
+
 function btn_delete(){
 	if(confirm("정말로 삭제하시겠습니까?")== true)
-		location.href = "/board/boardDelete?seqno=[[${view.seqno}]]"  // return redirect랑 똑같은 것.
+		location.href = "/board/boardDelete?seqno=[[${view.seqno}]]"  
 }
+
+function fileDownload(){
+	location.href = "/board/fileDownload?seqno=[[${view.seqno}]]"
+}
+
+
+function replyRegister(){
+	
+	if($("#replycontent").val() == ""){
+		alert("댓글을 입력하세요.");
+		$("#replycontent").focus(); // 포커스를 댓글창으로 다시 이동.
+		return false;
+	}
+	
+	var queryString = $("form[name=formreply]").serialize(); // string 형으로 변환해주는 메서드가 serialize
+	$.ajax({
+	
+		url:"/board/Reply?option=I",
+		type:"post",
+		dataType:"json",
+		data:queryString,
+		success: replyList,
+		error: function(data){
+			alert("서버 오류 문제로 댓글 등록이 실패했습니다.1");
+		}		
+	});
+	
+	$("#replywriter").val(""); // id에 해당하는 부분 초기화
+	$("#replycontent").val("");
+
+}
+
+
+
+
+
+function replyList(list){ // 여기 인자는 success에서 보내주는 것.
+	var result = "";
+	$.each(list, function(index,item){
+		result += "<div id ='replyListView'>";
+		result += "작성자 : " + item["replywriter"];
+		result += "<div style = 'width:50%; height:auto; border-top:1px solid gray; overflow:auto;'>";
+		result += "<pre>" + item["replycontent"] +"</pre></div>";
+		result += "</div>";
+		result += "</div><br>";
+	})	
+	$("#replyListView").remove(); 
+	$("#replyList").html(result);//reply라고 정의한 부분 밑에 써달라. 
+	
+}
+
+// 게시판 상세목록 들어가자 마자 댓글 보이게 하는 것.
+function startupPage(){
+	var queryString = {"seqno":'[[${view.seqno}]]'}
+	$.ajax({
+		url : "/board/Reply?option=L",
+		type: "post",
+		dataType: "json",
+		data:queryString,
+		success: replyList,
+		error:function(data){
+			alert("서버 오류 문제로 댓글 등록이 실패했습니다.2");
+		}
+	})
+}
+
+
 
 </script>
 </head>
-<body>
+
+
+<body onload = "startupPage()">
 
 <h1>게시물 상세 보기</h1>
 <br><br>
@@ -21,9 +91,35 @@ function btn_delete(){
 게시물 제목 : <span th:text = "${view.mtitle}"></span><br>
 작성일자 : <span th:text = "${view.mregdate}"></span><br>
 내용 <br>
-<pre th:text = "${view.mcontent}"> </pre> 
+<pre th:text = "${view.mcontent}"> </pre>
+<br>
+
+<div th:if = "${view.filename !=NULL}">
+업로드 파일명 : <a href = "javascript:fileDownload()"><span th:text = "${view.filename}"></span></a>
+</div>
+<div th:if = "${view.filename == NULL}">
+<span>등록된 파일이 없습니다.</span> 
+</div>
+
+
+<!-- 파일명 : <span th:text = "${view.filename}"></span> -->
+ 
 <br><br>
 [<a th:href="@{'/board/boardModify?seqno=' + ${view.seqno}}">수정</a>][<a href="javascript:btn_delete()">삭제</a>]
 
+<div class ="reply"> <!-- 클래스는 그룹으로 묶을 수 있는 것  -->
+<p>댓글을 작성해주세요</p>
+<form name = "formreply" method = "post">
+작성자 : <input type = "text" id = "replywriter" name = "replywriter"><br>
+<textarea id = "replycontent" name = "replycontent" cols='80' rows='5' maxlength= '150' placeholder='글자수:150자 이내'></textarea><br>
+<input type = "button" value = "댓글 등록" onclick = "replyRegister()" >
+
+<input type = "hidden" name = "seqno" th:value = "${view.seqno}">
+</form>
+<hr>
+<div id="replyList" style="width:100%; height:600px;overflow:auto;">
+	<div id = "replyListView"></div>
+</div>
+</div>
 </body>
 </html>
